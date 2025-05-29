@@ -1,0 +1,601 @@
+{
+  "name": "EJ 1 - Trigger - Wait - Set/Edit - Filter - If - Aggregate - Stop and Error",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -700,
+        300
+      ],
+      "id": "fa76b728-dd60-4c82-8e49-fef997c30eb1",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA",
+          "mode": "list",
+          "cachedResultName": "n8n_ejemplo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -520,
+        300
+      ],
+      "id": "001fb5f2-ab8e-46a2-8a51-ccc362be39e5",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "JNoGep1Gw18MudfZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "72cca44d-9dcb-4040-b168-ff15d400d191",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        20,
+        300
+      ],
+      "id": "0fdc76de-9346-48aa-93a6-b6cd87c68fcd",
+      "name": "Filter1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3ddea554-17a6-44f5-a44e-ee115c912a61",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@gmail",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "f73a4553-716b-4310-b2d0-fbf1469671ad",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@hotmail",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        300
+      ],
+      "id": "c112b1ff-eb14-4860-8f97-aabcdf6fa22d",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "67523b1c-3063-45a2-96bb-41f1184e78bc",
+              "name": "full_name",
+              "value": "={{ $json.first_name }} {{ $json.last_name.toUpperCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "e7215f95-d69f-4934-9e2f-439b0686492d",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "1152cd76-93b3-48c1-b363-cf60279b4a46",
+              "name": "company",
+              "value": "={{ $json.company }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        300
+      ],
+      "id": "1fe91bf6-9544-4a98-9724-77de6bac4b28",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "email"
+            },
+            {
+              "fieldToAggregate": "company"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        420,
+        160
+      ],
+      "id": "0a643ab6-f3b1-437a-bce9-96f479e2fe28",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U08TZNALM52",
+          "mode": "list",
+          "cachedResultName": "amandaodoo"
+        },
+        "text": "=Regisros de la semana: {{ $json.email }} Compañias: {{ $json.company }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        620,
+        160
+      ],
+      "id": "f1c3992c-a851-490e-94d6-e695005d1280",
+      "name": "Slack",
+      "webhookId": "851e93e0-4d1d-4b22-afdc-faea86105d11",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "EL63Gear1ZBvR0TW",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Ojo!! Ocurrio un error!!! "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        440,
+        400
+      ],
+      "id": "b2c5f95f-b70e-4bc7-8c19-b5c8bc447898",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -340,
+        300
+      ],
+      "id": "e5a493a4-6ef0-4d3c-b0f6-96aabd6794a2",
+      "name": "Wait",
+      "webhookId": "b8573301-6501-4248-85ad-f2786c20964a"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        -440
+      ],
+      "id": "9eef728c-34b3-447d-ac45-def97d1f27a9",
+      "name": "Schedule Trigger",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA",
+          "mode": "list",
+          "cachedResultName": "n8n_ejemplo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -540,
+        -440
+      ],
+      "id": "290b5cb2-d0da-45ae-8bff-37d318b1e43e",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "JNoGep1Gw18MudfZ",
+          "name": "Google Sheets account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3ddea554-17a6-44f5-a44e-ee115c912a61",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@gmail",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "f73a4553-716b-4310-b2d0-fbf1469671ad",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@hotmail",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        -440
+      ],
+      "id": "b3ecdc68-12a4-4eca-b9bd-5430c7b84e41",
+      "name": "If",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "67523b1c-3063-45a2-96bb-41f1184e78bc",
+              "name": "full_name",
+              "value": "={{ $json.first_name }} {{ $json.last_name.toUpperCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "e7215f95-d69f-4934-9e2f-439b0686492d",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "1152cd76-93b3-48c1-b363-cf60279b4a46",
+              "name": "company",
+              "value": "={{ $json.company }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -380,
+        -440
+      ],
+      "id": "0cbc2e52-6cc3-4c37-a21c-b9bb6c12217a",
+      "name": "Edit Fields1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "email"
+            },
+            {
+              "fieldToAggregate": "company"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        -520
+      ],
+      "id": "90a04eb1-c681-4ad2-88a9-14d94ce8304d",
+      "name": "Aggregate1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U08TZNALM52",
+          "mode": "list",
+          "cachedResultName": "amandaodoo"
+        },
+        "text": "=sIGN UPS OF THE WEEK: {{ $json.email }} COMPANIES: {{ $json.company }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        140,
+        -520
+      ],
+      "id": "fa3d79bb-15c2-4ec2-bf97-2230e5915d55",
+      "name": "Slack1",
+      "webhookId": "851e93e0-4d1d-4b22-afdc-faea86105d11",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "EL63Gear1ZBvR0TW",
+          "name": "Slack account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        -320
+      ],
+      "id": "f0a75626-c305-4e65-aab3-46efe2314653",
+      "name": "Stop and Error1",
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Slack1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3760fcaf-2b53-4915-8068-2dd53dc45cee",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ef2c9d4fbe371cefddb16a35490d3862fed81fa6c9b44d5eaf2920effd1958b1"
+  },
+  "id": "BvLYJCH4UXwfK7oY",
+  "tags": []
+}

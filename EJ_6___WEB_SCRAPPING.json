@@ -1,0 +1,181 @@
+{
+  "name": "EJ 6 - WEB SCRAPPING",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -240
+      ],
+      "id": "df1bcd6b-30a0-4a94-b79c-b909d269b71c",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "http://books.toscrape.com/catalogue/category/books/science_22/index.html",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -520,
+        -240
+      ],
+      "id": "42500d67-8dab-4cf6-82da-544460098531",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "nombre",
+              "cssSelector": "=h3",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        -340,
+        -240
+      ],
+      "id": "ac3bbf49-619b-4fdf-a9d1-9182217f3317",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "sendTo": "29433211@ifts24.edu.ar",
+        "subject": "libros",
+        "message": "=estos son los libros:\n{{ $json.titulos }}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        180,
+        -240
+      ],
+      "id": "9d9f1afe-a76c-4c5b-aad1-681ed18fbaa4",
+      "name": "Gmail1",
+      "webhookId": "d429b4fd-b461-43d8-a73e-733aa4180903",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kwbW4lKZhximsiI6",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "395cfae9-e645-4ef8-8912-47520248116d",
+              "name": "nombre",
+              "value": "={{ $json.nombre }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -240
+      ],
+      "id": "c0a7ec5b-f500-4f47-b6a3-b2e8786988f0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.nombre;\n\nconst titulos = raw.map((entry) => {\n  // Elimina todo lo que esté entre corchetes y los corchetes mismos\n  const titulo = entry.replace(/\\s*\\[.*?\\]/g, '').trim();\n  return titulo;\n});\n\nreturn [{ json: { titulos } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        20,
+        -240
+      ],
+      "id": "c5279f47-10f0-4927-b8b1-bb24a21bcca9",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9d08c080-8f53-4860-b373-3c113028b991",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ef2c9d4fbe371cefddb16a35490d3862fed81fa6c9b44d5eaf2920effd1958b1"
+  },
+  "id": "SEYrY8HwNyHfGIWK",
+  "tags": []
+}

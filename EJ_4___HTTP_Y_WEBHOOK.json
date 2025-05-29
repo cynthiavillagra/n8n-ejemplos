@@ -1,0 +1,134 @@
+{
+  "name": "EJ 4 - HTTP Y WEBHOOK",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "735dbce7-1e7d-4e2e-9053-c1627ecd89dd",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        -60
+      ],
+      "id": "25987483-c006-472d-94fd-1185d6ece5d7",
+      "name": "Webhook",
+      "webhookId": "735dbce7-1e7d-4e2e-9053-c1627ecd89dd"
+    },
+    {
+      "parameters": {
+        "url": "https://pokeapi.co/api/v2/pokemon/bulbasaur/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -180,
+        -60
+      ],
+      "id": "276c2129-6bae-4580-86e9-e9bbeaf45863",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38a8c3cb-433b-41cc-a3d7-390012b7fcbc",
+              "name": "=id",
+              "value": "={{ $json.forms[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "1c181a72-bb32-4461-8c31-715a747b6009",
+              "name": "habilidad",
+              "value": "={{ $json.abilities[0].ability.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        20,
+        -60
+      ],
+      "id": "e81b3c86-f39e-44d1-8faa-58aad84f5482",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "29433211@ifts24.edu.ar",
+        "subject": "=hola {{ $json.id }}",
+        "message": "=Tu habilidad es  {{ $json.habilidad }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        200,
+        -60
+      ],
+      "id": "6fd2bfed-908e-479d-b15c-5cb23c91bbc7",
+      "name": "Gmail",
+      "webhookId": "5fe6034d-c45d-4a83-9baa-e4a42909cd0e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kwbW4lKZhximsiI6",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6a55b8e5-a338-4092-b275-a4910c9ed736",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ef2c9d4fbe371cefddb16a35490d3862fed81fa6c9b44d5eaf2920effd1958b1"
+  },
+  "id": "kQ04kbLkuu9pe1y1",
+  "tags": []
+}

@@ -1,0 +1,147 @@
+{
+  "name": "EJ 2 - nodo CODE",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        -100
+      ],
+      "id": "386e1ed2-14f6-47d3-8bc6-1aac5d9b2a88",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "var total = 0;\n\nfor (const item of $input.all()) {\n    total += item.json.total_order_value;\n}\n\nreturn { \"total\": total };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        -240
+      ],
+      "id": "b77b3efc-9810-4add-993d-f6d0dff0e03e",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA",
+          "mode": "list",
+          "cachedResultName": "n8n_ejemplo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -660,
+        -100
+      ],
+      "id": "3e68f899-5c75-4a5a-b668-22035d9f134d",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "JNoGep1Gw18MudfZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## code Run once for ALL items\n\nideal para agregacion",
+        "height": 280,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -460,
+        -380
+      ],
+      "typeVersion": 1,
+      "id": "64c13f26-2d70-4503-b68b-38ae391b2667",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## code Run Once for EACH items\n\nideal para transformar\n",
+        "height": 320,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -460,
+        -60
+      ],
+      "typeVersion": 1,
+      "id": "95f6070e-d5c4-44d5-9386-02f9d2c7f497",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Agrega un nuevo campo llamado \"average_value\" al JSON del item\n\n// Calcula el promedio dividiendo el total de órdenes por la cantidad de pedidos\nvar average_value = \n$input.item.json.total_order_value / $input.item.json.order_count;\n\n// Guarda el resultado en un nuevo campo llamado \"average_value\"\n$input.item.json.average_value = average_value;\n\n// Devuelve el item modificado\nreturn $input.item;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        100
+      ],
+      "id": "8c37debe-72fb-4ec9-b4f9-a771b0c4efed",
+      "name": "Code1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2eda162d-ca31-4134-9c32-c11d61b9f9b3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ef2c9d4fbe371cefddb16a35490d3862fed81fa6c9b44d5eaf2920effd1958b1"
+  },
+  "id": "evmyNiNelBFlCbBJ",
+  "tags": []
+}

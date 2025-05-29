@@ -1,0 +1,200 @@
+{
+  "name": "EJ 3.3 - SWITCH",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        -120
+      ],
+      "id": "183f4c6b-5b40-4f40-93f9-2bedc2130b3f",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA",
+          "mode": "list",
+          "cachedResultName": "n8n_ejemplo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -300,
+        -120
+      ],
+      "id": "33479db8-e93d-47d9-9757-c624b9212e97",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "JNoGep1Gw18MudfZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.country }}",
+                    "rightValue": "Argentina",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "e1aae6ff-7f5c-429c-8371-15e3f4cfecaa"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9b81265b-29f0-4313-875f-c57c04514b82",
+                    "leftValue": "={{ $json.country }}",
+                    "rightValue": "Paraguay",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -20,
+        -320
+      ],
+      "id": "3aca618d-0115-4067-a12b-56359bf08547",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 3,
+        "output": "={{ $json.total_order_value > 40 ? 0 : ($json.total_order_value <= 20 ? 1 : 2) }}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -20,
+        0
+      ],
+      "id": "f7ad3d6e-170e-4685-aec4-3509b7aeb232",
+      "name": "Switch1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Expresion\ncondición ? valor_si_es_verdadero : valor_si_es_falso\n",
+        "height": 300,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -60,
+        -120
+      ],
+      "typeVersion": 1,
+      "id": "7fe27bd0-2d35-405d-8166-791f30599848",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Rules",
+        "height": 260,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -60,
+        -400
+      ],
+      "typeVersion": 1,
+      "id": "993a4780-0afb-49ad-ac62-18bd54595ef0",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8c07d742-34cd-4b4a-a7d2-c471140179eb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ef2c9d4fbe371cefddb16a35490d3862fed81fa6c9b44d5eaf2920effd1958b1"
+  },
+  "id": "4tIFbd5DxRTgVHvT",
+  "tags": []
+}

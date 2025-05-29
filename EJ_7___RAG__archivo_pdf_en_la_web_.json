@@ -1,0 +1,455 @@
+{
+  "name": "EJ 7 - RAG (archivo pdf en la web)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "721fa365-8094-4182-b2b5-4195a4bbbe9c",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        840,
+        260
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://drive.google.com/uc?export=download&id=1dSlHoBu37-G3qvPJsx1u_2HRgBXub1hP",
+        "options": {}
+      },
+      "id": "39ba1850-edbb-41c4-a1b1-b2857abe954c",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1120,
+        260
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "ppaa",
+          "mode": "list",
+          "cachedResultName": "ppaa"
+        },
+        "options": {}
+      },
+      "id": "4c742c01-7b63-4f81-be9b-f3588c609be6",
+      "name": "Pinecone Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "position": [
+        1700,
+        260
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "pineconeApi": {
+          "id": "d48qlY47Roa2xp2Q",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "ba0db490-3297-4048-a0eb-6b3798d241d5",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        1800,
+        460
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "ac2dbca8-a4cf-4281-bc4d-cd435c2ae59a",
+      "name": "Recursive Character Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "position": [
+        1800,
+        640
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "67a10678-9e19-4165-b3fa-9f2db706ce0a",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        1180,
+        1260
+      ],
+      "webhookId": "e6ed8217-1fb3-4ad9-b466-7dcb016d2dd6",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "Sos un asistente útil y preciso. Respondé preguntas sobre primeros auxilios usando únicamente la información proporcionada en los documentos recuperados.\nEsa información proviene de manual de ppaa de cruz roja, y está guardada en una base vectorial.\nNo inventes datos. Si la respuesta no está en los documentos proporcionados, respondé:\n“Lo siento, no tengo información suficiente para responder esa pregunta con los datos disponibles.”"
+        }
+      },
+      "id": "d4ce719a-f834-43af-9570-be4397145451",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1520,
+        1260
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "98b47aa7-31a2-4fa2-bac4-e0da280474a0",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        1440,
+        1440
+      ],
+      "typeVersion": 1.1,
+      "credentials": {
+        "openAiApi": {
+          "id": "ml3dPFyutwLVdkym",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "5fbc77e8-f642-41ba-9df6-fe6cf8acc646",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [
+        1600,
+        1440
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "name": "CruzRoja_PrimerosAuxilios",
+        "description": "Sos un asistente útil y preciso. Usá esta herramienta para obtener información sobre primeros auxilios.\nLa base de datos contiene fragmentos de texto extraídos de la página de manula de cruz roja sobre priumeros auxilios.\nRespondé únicamente con la información recuperada de esa fuente."
+      },
+      "id": "2f6ada1d-3746-4680-a9c0-dbdcf05c2a11",
+      "name": "Vector Store Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "position": [
+        1780,
+        1440
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b269449d-e0b4-4d59-aba5-bd7aa4e0b35f",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        2040,
+        1620
+      ],
+      "typeVersion": 1.1,
+      "credentials": {
+        "openAiApi": {
+          "id": "ml3dPFyutwLVdkym",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Indexar contenido en la base de datos vectorial\n\nEsta parte del flujo de trabajo se encarga de extraer contenido, generar embeddings y enviarlos a la base de datos vectorial Pinecone.\n\nSolicita las especificaciones OpenAPI desde GitHub mediante una solicitud HTTP. Luego, divide el archivo en fragmentos, genera embeddings para cada fragmento usando OpenAI y los guarda en la base de datos vectorial de Pinecone.\n",
+        "height": 200,
+        "width": 640
+      },
+      "id": "7dcb80ea-e4da-4f75-be14-d8352d99a71d",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        920,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Consulta y generación de respuestas\n\nEsta parte del flujo de trabajo se encarga de la interfaz de chat, de realizar consultas a la base de datos vectorial y de generar respuestas relevantes.\n\nUtiliza OpenAI GPT 4o-mini para generar las respuestas.\n",
+        "width": 580
+      },
+      "id": "5a06aeb9-9414-4045-af5e-8af5bdf78db6",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        620,
+        1500
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "da5ed908-f6fc-4d57-912a-31a2d93db535",
+      "name": "Generate User Query Embedding",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        1640,
+        1740
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "ml3dPFyutwLVdkym",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "ppaa",
+          "mode": "list",
+          "cachedResultName": "ppaa"
+        },
+        "options": {}
+      },
+      "id": "b7212e80-74a1-4ad0-a8e6-b152e0dafce1",
+      "name": "Pinecone Vector Store (Querying)",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "position": [
+        1680,
+        1600
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "pineconeApi": {
+          "id": "d48qlY47Roa2xp2Q",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "41f9a231-8779-46e1-a98f-56759769be0c",
+      "name": "Generate Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        1620,
+        460
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "ml3dPFyutwLVdkym",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Flujo de trabajo RAG en n8n\n\nEste es un ejemplo de cómo usar técnicas RAG para crear un chatbot con n8n. Se trata de un chatbot de documentación de API que puede responder preguntas sobre la API de GitHub. Utiliza OpenAI para generar embeddings, el modelo LLM gpt-4o-mini para generar respuestas, y Pinecone como base de datos vectorial.\n\nAntes de usar esta plantilla\n- Crear cuentas en OpenAI y Pinecone\n- Obtener las claves API de OpenAI y Pinecone\n- Configurar las credenciales en n8n para ambos servicios\n\nAsegurarse de tener un índice en Pinecone llamado \"n8n-demo\" o ajustar el flujo de trabajo en consecuencia.",
+        "height": 360,
+        "width": 620
+      },
+      "id": "8eaca11e-f8ac-48ce-8667-ccf9c5113eba",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        140,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        260
+      ],
+      "id": "51bd45bd-16de-4899-87a6-bb80fdb7d119",
+      "name": "Extract from File"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate User Query Embedding": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store (Querying)",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store (Querying)": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2d6ae9e2-ff5c-428f-b413-14070e4a7482",
+  "meta": {
+    "templateId": "2705",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ef2c9d4fbe371cefddb16a35490d3862fed81fa6c9b44d5eaf2920effd1958b1"
+  },
+  "id": "hpzjNNWSJMlBM5IR",
+  "tags": []
+}

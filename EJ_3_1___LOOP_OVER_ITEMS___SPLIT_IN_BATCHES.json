@@ -1,0 +1,194 @@
+{
+  "name": "EJ 3.1 - LOOP OVER ITEMS / SPLIT IN BATCHES",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        -40
+      ],
+      "id": "139b2472-90cb-4153-9109-79b295de3aae",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA",
+          "mode": "list",
+          "cachedResultName": "n8n_ejemplo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Zsoam6RmGFBeqmgDUIl_wn-CqJtlysVgCZdZf36ipPA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -680,
+        -40
+      ],
+      "id": "fb0398a1-c550-471e-ae54-6c1fbfc2b286",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "JNoGep1Gw18MudfZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 3,
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -440,
+        -40
+      ],
+      "id": "fa067014-aedd-4f29-8d02-f0afa6b35fce",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        -20
+      ],
+      "id": "fc66b1b2-9779-46de-bf36-b9b1c4dfc092",
+      "name": "Wait",
+      "webhookId": "b5212acd-8328-460a-8380-d28528722c97"
+    },
+    {
+      "parameters": {
+        "sendTo": "29433211@ifts24.edu.ar",
+        "subject": "lote de contactos",
+        "message": "={{ $json.texto }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        20,
+        -20
+      ],
+      "id": "293d3448-13ef-49b5-82f4-45a27202aa9b",
+      "name": "Gmail",
+      "webhookId": "f68cc468-2c07-4fb2-bfaa-5c8e5b960c8b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kwbW4lKZhximsiI6",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let texto = \"Nuevo lote de contactos:\\n\\n\";\nfor (const item of $input.all()) {\n  texto += `- ${item.json.first_name} ${item.json.last_name} (${item.json.company})\\n`;\n}\nreturn [{ json: { texto } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -20
+      ],
+      "id": "0a50c5c8-e09b-4fd5-b1c1-94a58c127d64",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1e4ca223-edcb-4447-b5a4-855c11b7cf8c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ef2c9d4fbe371cefddb16a35490d3862fed81fa6c9b44d5eaf2920effd1958b1"
+  },
+  "id": "SjGOuKIbuTWJIcTM",
+  "tags": []
+}
